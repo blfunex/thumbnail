@@ -149,7 +149,6 @@ function getDurationString(duration: number) {
 videoPlayer.addEventListener("canplaythrough", () => {
   videoPlayer.removeEventListener("progress", onVideoProgress);
   stage.tansition("loading", "video");
-  videoPlayer.loop = true;
 });
 
 toUpload.addEventListener("click", goBackToUpload);
@@ -299,14 +298,26 @@ videoTime.addEventListener("keydown", (e) => {
     case "ArrowUp":
       if (minutesSelected) {
         if (mm === mmMax) return;
-        videoTime.value = `${pad(mm + 1)}:${pad(ss)}`;
+        if (ss > ssMax && mm == mmMax - 1) {
+          videoTime.value = `${pad(mm)}:${pad(ssMax)}`;
+        } else {
+          videoTime.value = `${pad(mm + 1)}:${pad(ss)}`;
+        }
         selectVideoTimeSide(true);
       } else {
-        if (ss === 59) {
-          videoTime.value = `${pad(mm + 1)}:00`;
+        if (mm === mmMax) {
+          if (ss === ssMax) return;
+          if (ss === ssMax - 1) {
+            videoTime.value = `${pad(mm)}:${pad(ssMax)}`;
+          } else {
+            videoTime.value = `${pad(mm)}:${pad(ss + 1)}`;
+          }
         } else {
-          if (mm === mmMax && ss === ssMax) return;
-          videoTime.value = `${pad(mm)}:${pad(ss + 1)}`;
+          if (ss === 59) {
+            videoTime.value = `${pad(mm + 1)}:00`;
+          } else {
+            videoTime.value = `${pad(mm)}:${pad(ss + 1)}`;
+          }
         }
         selectVideoTimeSide(false);
       }
