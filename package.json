@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "parcel build src/index.html --public-url ./thumbnail/"
+    "build": "parcel build src/index.html --public-url /thumbnail/"
   },
   "repository": {
     "type": "git",
