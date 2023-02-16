@@ -157,7 +157,7 @@ function pad(seconds: number) {
   return seconds.toString().padStart(2, "0");
 }
 
-function onVideoTimeChange() {
+function onVideoRangeChange() {
   videoPlayer.pause();
   const value = videoRange.valueAsNumber;
   const percent = value / 100;
@@ -174,11 +174,9 @@ function updateTimeRange() {
   videoRange.value = `${progress * 100}`;
 }
 
-const trottledOnVideoTimeChange = trottle(onVideoTimeChange, 5);
-
-function onVideoTimeMouseMove() {
+function onVideoRangeMouseMove() {
   if (document.activeElement !== videoRange) return;
-  trottledOnVideoTimeChange();
+  onVideoRangeChange();
 }
 
 function onVideoTimeSelect() {
@@ -253,7 +251,7 @@ function selectVideoTimeDone() {
   selectVideoTime();
 }
 
-videoRange.addEventListener("mousemove", onVideoTimeMouseMove);
+videoRange.addEventListener("mousemove", onVideoRangeMouseMove);
 videoTime.addEventListener("select", onVideoTimeSelect);
 videoTime.addEventListener("focus", onVideoTimeSelect);
 videoTime.addEventListener("click", onVideoTimeSelect);
@@ -322,26 +320,16 @@ videoTime.addEventListener("keydown", (e) => {
       break;
   }
 
-  trottledOnVideoTimeInputChange();
+  onVideoTimeChange();
 });
 
-function onVideoTimeInputChange() {
+function onVideoTimeChange() {
   const value = videoTime.value;
   const [mm, ss] = value.split(":").map(parseFloat);
   const seconds = mm * 60 + ss;
   const duration = videoPlayer.duration;
   const clamped = clamp(0, duration, seconds);
   videoPlayer.currentTime = clamped;
-}
-
-const trottledOnVideoTimeInputChange = trottle(onVideoTimeInputChange, 5);
-
-function trottle(fn: () => void, ms: number) {
-  let timeout: number;
-  return () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(fn, ms);
-  };
 }
 
 function onGenerateClick() {
