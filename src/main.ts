@@ -104,17 +104,25 @@ document.addEventListener("paste", (e) => {
 });
 
 function goBackToUpload() {
-  videoPlayer.srcObject = null;
-  uploadForm.reset();
+  reset();
   stage.show("upload");
 }
 
-function onFileSelected(file: File) {
-  fileNameOutput.value = file.name;
-  videoPlayer.src = URL.createObjectURL(file);
+function reset() {
+  uploadForm.reset();
   loading.value = 0;
   videoRange.value = "0";
   videoTime.value = "00:00";
+  download.download = "";
+  fileNameOutput.value = "";
+  videoPlayer.src = "";
+  thumbnail.src = "";
+}
+
+function onFileSelected(file: File) {
+  reset();
+  fileNameOutput.value = file.name;
+  videoPlayer.src = URL.createObjectURL(file);
   download.download = removeExt(file.name);
   stage.show("loading");
 }
@@ -176,7 +184,7 @@ function updateTimeRange() {
 
 function onVideoRangeMouseMove() {
   if (document.activeElement !== videoRange) return;
-  onVideoRangeChange();
+  requestAnimationFrame(onVideoRangeChange);
 }
 
 function onVideoTimeSelect() {
