@@ -201,9 +201,7 @@ function selectVideoTime() {
   const value = videoTime.value;
   const colon = value.indexOf(":") + 1;
   const selStart = videoTime.selectionStart;
-  const selEnd = videoTime.selectionEnd;
-  const isFocus = selStart === selEnd;
-  if (isFocus) selectVideoTimeSide(selStart === null || selStart < colon);
+  selectVideoTimeSide(selStart === null || selStart < colon);
 }
 
 function clampVideoTime() {
@@ -261,10 +259,16 @@ videoTime.addEventListener("focus", onVideoTimeSelect);
 videoTime.addEventListener("click", onVideoTimeSelect);
 videoTime.addEventListener("blur", fixVideoTime);
 videoTime.addEventListener("keypress", (e) => {
+  if (!numbers.includes(e.key)) return;
   e.preventDefault();
   fixVideoTime();
 });
+
+const numbers = "0123456789".split("");
+const arrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+
 videoTime.addEventListener("keydown", (e) => {
+  if (!arrows.includes(e.key)) return;
   e.preventDefault();
 
   const selStart = videoTime.selectionStart;
@@ -315,9 +319,6 @@ videoTime.addEventListener("keydown", (e) => {
         }
         selectVideoTimeSide(false);
       }
-      break;
-    default:
-      selectVideoTimeDone();
       break;
   }
 
